@@ -513,6 +513,10 @@ static void calculate_normal_dir(const Light_t *light, float coeffs[3]) {
     gfx_normalize_vector(coeffs);
 }
 
+#ifdef TARGET_N3DS
+void multMatrix44FPU(float a[4][4], float b[4][4], float res[4][4]);
+#define gfx_matrix_mul(res, a, b) multMatrix44FPU( (float (*)[4])(a), (float (*)[4])(b), (float (*)[4])(res) )
+#else
 static void gfx_matrix_mul(float res[4][4], const float a[4][4], const float b[4][4]) {
     float tmp[4][4];
     for (int i = 0; i < 4; i++) {
@@ -525,6 +529,7 @@ static void gfx_matrix_mul(float res[4][4], const float a[4][4], const float b[4
     }
     memcpy(res, tmp, sizeof(tmp));
 }
+#endif
 
 static void gfx_sp_matrix(uint8_t parameters, const int32_t *addr) {
     float matrix[4][4];
